@@ -1,0 +1,103 @@
+entrypoint = "index.js"
+
+hidden = [".config", "bun.lockb", ".bunfig.toml"]
+run = "bun --hot --port=3000 --define=process.env.NODE_ENV:\"'development'\" index.js"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", "package.json", "bun.lockb"]
+
+[nix]
+channel = "stable-23_11"
+
+[env]
+XDG_CONFIG_HOME = "/home/runner/$REPL_SLUG/.config"
+XDG_CONFIG_CACHE = "/home/runner/$REPL_SLUG/.cache"
+npm_config_prefix = "/home/runner/$REPL_SLUG/.config/npm/node_global"
+BUN_INSTALL = "/home/runner/$REPL_SLUG/.config/.bun"
+PATH = "/home/runner/$REPL_SLUG/.config/.bun/bin:/home/runner/$REPL_SLUG/.config/npm/node_global/bin"
+TMPDIR = "/tmp"
+BUN_CONFIG_MAX_HTTP_REQUESTS = "128"
+BUN_CONFIG_NO_CLEAR_TERMINAL_ON_RELOAD = "1"
+DO_NOT_TRACK = "1"
+BUN_RUNTIME_TRANSPILER_CACHE_PATH = "0"
+NODE_REPL_HISTORY = "/home/runner/$REPL_SLUG/.config/node_repl.txt"
+BUN_REPL_PORT = "9431"
+
+[unitTest]
+language = "bun"
+
+[debugger]
+
+[debugger.interactive]
+startCommand = { args = [
+  "bun",
+  "--inspect=0.0.0.0:6499/inspect",
+  "--port=9222",
+  "index.js",
+], env = { NODE_ENV = "development" } }
+connectTimeout = 15000
+
+[packager]
+language = "bunjs"
+ignoredPaths = ["/home/runner/$REPL_SLUG/.config"]
+
+[packager.features]
+guessImports = true
+packageSearch = true
+enabledForHosting = false
+
+
+[languages]
+[languages.javascript]
+pattern = "**/{*.js,*.jsx,*.mjs,*.cjs}"
+
+[languages.javascript.languageServer]
+start = "typescript-language-server --stdio"
+
+[languages.json]
+pattern = "**/{*.json,*.jsonc}"
+
+[languages.json.languageServer]
+start = "vscode-json-language-server --stdio"
+
+[languages.html]
+pattern = "**/{*.html,*.htmx}"
+
+[languages.html.languageServer]
+start = "vscode-html-language-server  --stdio"
+
+[languages.css]
+pattern = "**/{*.css,*.scss,*.sass}"
+
+[languages.css.languageServer]
+start = "vscode-css-language-server  --stdio"
+
+[languages.eslint]
+pattern = "**/{eslint.config.js,eslint.config.mjs,.eslintrc}"
+
+[languages.eslint.languageServer]
+start = "vscode-eslint-language-server --stdio"
+
+[languages.nix]
+pattern = "**/{*.nix}"
+
+[languages.nix.languageServer]
+start = "nil"
+
+[deployment]
+run = ["bun", "run", "out/index.js"]
+build = [
+  "bun",
+  "build",
+  "index.js",
+  "--format=esm",
+  "--target=bun",
+  "--outdir=out",
+  "--minify",
+]
+deploymentTarget = "cloudrun"
+ignorePorts = false
+
+[[ports]]
+localPort = 3000
+externalPort = 80
